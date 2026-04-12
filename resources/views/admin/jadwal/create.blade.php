@@ -45,18 +45,6 @@
             </select>
             @error('hari')<small style="color:red">{{ $message }}</small>@enderror
         </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Jam Mulai</label>
-                <input type="time" name="jam_mulai" class="form-control" value="{{ old('jam_mulai') }}">
-                @error('jam_mulai')<small style="color:red">{{ $message }}</small>@enderror
-            </div>
-            <div class="form-group">
-                <label class="form-label">Jam Selesai</label>
-                <input type="time" name="jam_selesai" class="form-control" value="{{ old('jam_selesai') }}">
-                @error('jam_selesai')<small style="color:red">{{ $message }}</small>@enderror
-            </div>
-        </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>

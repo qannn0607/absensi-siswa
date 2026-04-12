@@ -12,6 +12,7 @@
         <div class="form-group">
             <label class="form-label">Kelas</label>
             <select name="kelas_id" class="form-control">
+                <option value="">-- Pilih Kelas --</option>
                 @foreach($kelas as $k)
                     <option value="{{ $k->id }}"
                         {{ old('kelas_id', $jadwal->kelas_id) == $k->id ? 'selected' : '' }}>
@@ -19,10 +20,12 @@
                     </option>
                 @endforeach
             </select>
+            @error('kelas_id')<small style="color:red">{{ $message }}</small>@enderror
         </div>
         <div class="form-group">
             <label class="form-label">Mata Pelajaran</label>
             <select name="mata_pelajaran_id" class="form-control">
+                <option value="">-- Pilih Mata Pelajaran --</option>
                 @foreach($mapel as $m)
                     <option value="{{ $m->id }}"
                         {{ old('mata_pelajaran_id', $jadwal->mata_pelajaran_id) == $m->id ? 'selected' : '' }}>
@@ -30,10 +33,12 @@
                     </option>
                 @endforeach
             </select>
+            @error('mata_pelajaran_id')<small style="color:red">{{ $message }}</small>@enderror
         </div>
         <div class="form-group">
             <label class="form-label">Hari</label>
             <select name="hari" class="form-control">
+                <option value="">-- Pilih Hari --</option>
                 @foreach(['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'] as $hari)
                     <option value="{{ $hari }}"
                         {{ old('hari', $jadwal->hari) == $hari ? 'selected' : '' }}>
@@ -41,18 +46,7 @@
                     </option>
                 @endforeach
             </select>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Jam Mulai</label>
-                <input type="time" name="jam_mulai" class="form-control"
-                       value="{{ old('jam_mulai', $jadwal->jam_mulai) }}">
-            </div>
-            <div class="form-group">
-                <label class="form-label">Jam Selesai</label>
-                <input type="time" name="jam_selesai" class="form-control"
-                       value="{{ old('jam_selesai', $jadwal->jam_selesai) }}">
-            </div>
+            @error('hari')<small style="color:red">{{ $message }}</small>@enderror
         </div>
         <button type="submit" class="btn btn-primary">Update</button>
     </form>

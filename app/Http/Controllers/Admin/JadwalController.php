@@ -29,12 +29,10 @@ class JadwalController extends Controller
             'kelas_id'          => 'required|exists:kelas,id',
             'mata_pelajaran_id' => 'required|exists:mata_pelajaran,id',
             'hari'              => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu',
-            'jam_mulai'         => 'required',
-            'jam_selesai'       => 'required|after:jam_mulai',
         ]);
 
         Jadwal::create($request->only(
-            'kelas_id', 'mata_pelajaran_id', 'hari', 'jam_mulai', 'jam_selesai'
+            'kelas_id', 'mata_pelajaran_id', 'hari'
         ));
 
         return redirect()->route('admin.jadwal.index')
@@ -54,12 +52,10 @@ class JadwalController extends Controller
             'kelas_id'          => 'required|exists:kelas,id',
             'mata_pelajaran_id' => 'required|exists:mata_pelajaran,id',
             'hari'              => 'required|in:Senin,Selasa,Rabu,Kamis,Jumat,Sabtu',
-            'jam_mulai'         => 'required',
-            'jam_selesai'       => 'required|after:jam_mulai',
         ]);
 
         $jadwal->update($request->only(
-            'kelas_id', 'mata_pelajaran_id', 'hari', 'jam_mulai', 'jam_selesai'
+            'kelas_id', 'mata_pelajaran_id', 'hari'
         ));
 
         return redirect()->route('admin.jadwal.index')

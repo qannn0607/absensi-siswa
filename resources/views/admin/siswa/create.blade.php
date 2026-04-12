@@ -25,9 +25,9 @@
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label class="form-label">Email</label>
+                <label class="form-label">Email <small style="color:#94a3b8">(opsional)</small></label>
                 <input type="email" name="email" class="form-control"
-                       value="{{ old('email') }}" placeholder="email@siswa.com">
+                    value="{{ old('email') }}" placeholder="opsional">
                 @error('email')<small style="color:red">{{ $message }}</small>@enderror
             </div>
             <div class="form-group">

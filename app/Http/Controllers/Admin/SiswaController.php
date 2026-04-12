@@ -9,6 +9,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Imports\SiswaImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
@@ -42,7 +44,7 @@ class SiswaController extends Controller
         // Buat user dulu
         $user = User::create([
             'name'     => $request->name,
-            'email'    => $request->email,
+            'email'    => $request->email ?? null,
             'password' => Hash::make($request->password),
             'role'     => 'siswa',
         ]);
@@ -76,7 +78,7 @@ class SiswaController extends Controller
     {
         $request->validate([
             'name'          => 'required|string|max:100',
-            'email'         => 'required|email|unique:users,email,' . $siswa->user_id,
+            'email'         => 'nullable|email|unique:users,email',
             'nis'           => 'required|unique:siswa,nis,' . $siswa->id,
             'kelas_id'      => 'required|exists:kelas,id',
             'jenis_kelamin' => 'required|in:L,P',
@@ -124,4 +126,47 @@ class SiswaController extends Controller
         return redirect()->route('admin.siswa.index')
                          ->with('success', 'Siswa berhasil dihapus.');
     }
+    public function importForm()
+{
+    return view('admin.siswa.import');
+}
+
+public function import(Request $request)
+{
+    $request->validate([
+        'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+    ]);
+
+    try {
+        Excel::import(new SiswaImport, $request->file('file'));
+        return redirect()->route('admin.siswa.index')
+                         ->with('success', 'Data siswa berhasil diimport.');
+    } catch (\Exception $e) {
+        return redirect()->back()
+                         ->with('error', 'Gagal import: ' . $e->getMessage());
+    }
+}
+
+public function bulkDestroy(Request $request)
+{
+    $ids = $request->input('ids', []);
+
+    if (empty($ids)) {
+        return back()->with('error', 'Tidak ada siswa yang dipilih.');
+    }
+
+    // Hapus foto & user terkait
+    $siswas = Siswa::whereIn('id', $ids)->get();
+    foreach ($siswas as $siswa) {
+        if ($siswa->foto) {
+            Storage::delete($siswa->foto);
+        }
+        if ($siswa->user) {
+            $siswa->user->delete();
+        }
+        $siswa->delete();
+    }
+
+    return back()->with('success', count($ids) . ' siswa berhasil dihapus.');
+}
 }

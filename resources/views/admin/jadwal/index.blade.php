@@ -10,12 +10,10 @@
     <table class="table">
         <thead>
             <tr>
-                <th>#</th>
+                <th>No.</th>
                 <th>Kelas</th>
                 <th>Mata Pelajaran</th>
                 <th>Hari</th>
-                <th>Jam Mulai</th>
-                <th>Jam Selesai</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -26,8 +24,6 @@
                 <td>{{ $item->kelas->nama_kelas }}</td>
                 <td>{{ $item->mataPelajaran->nama_mapel }}</td>
                 <td>{{ $item->hari }}</td>
-                <td>{{ $item->jam_mulai }}</td>
-                <td>{{ $item->jam_selesai }}</td>
                 <td>
                     <a href="{{ route('admin.jadwal.edit', $item) }}" class="btn btn-warning">Edit</a>
                     <form action="{{ route('admin.jadwal.destroy', $item) }}" method="POST"
@@ -39,7 +35,7 @@
             </tr>
             @empty
             <tr>
-                <td colspan="7" style="text-align:center; color:#94a3b8;">Belum ada data jadwal</td>
+                <td colspan="5" style="text-align:center; color:#94a3b8;">Belum ada data jadwal</td>
             </tr>
             @endforelse
         </tbody>

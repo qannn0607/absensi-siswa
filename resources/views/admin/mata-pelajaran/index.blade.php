@@ -10,7 +10,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th>#</th>
+                <th>No. </th>
                 <th>Nama Mata Pelajaran</th>
                 <th>Guru</th>
                 <th>Aksi</th>
@@ -21,7 +21,7 @@
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $item->nama_mapel }}</td>
-                <td>{{ $item->guru->name ?? '-' }}</td>
+                <td>{{ $item->guru ?? '-' }}</td>
                 <td>
                     <a href="{{ route('admin.mata-pelajaran.edit', $item) }}" class="btn btn-warning">Edit</a>
                     <form action="{{ route('admin.mata-pelajaran.destroy', $item) }}" method="POST"

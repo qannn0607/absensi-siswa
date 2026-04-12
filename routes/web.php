@@ -34,9 +34,12 @@ Route::middleware(['auth', 'role:admin'])
     ->group(function () {
         Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
         Route::resource('kelas', KelasController::class);
-        Route::resource('siswa', SiswaController::class);
+        Route::get('siswa/import', [SiswaController::class, 'importForm'])->name('siswa.import.form');
+        Route::post('siswa/import', [SiswaController::class, 'import'])->name('siswa.import');
+        Route::delete('siswa/bulk-destroy', [SiswaController::class, 'bulkDestroy'])->name('siswa.bulkDestroy');        Route::resource('siswa', SiswaController::class);
         Route::resource('mata-pelajaran', MataPelajaranController::class);
         Route::resource('jadwal', JadwalController::class);
+        Route::delete('absensi/bulk-destroy', [AbsensiController::class, 'bulkDestroy'])->name('absensi.bulkDestroy');
         Route::resource('absensi', AbsensiController::class);
     });
 

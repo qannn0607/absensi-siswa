@@ -15,6 +15,12 @@
                    value="{{ old('nama_mapel') }}" placeholder="contoh: Matematika">
             @error('nama_mapel')<small style="color:red">{{ $message }}</small>@enderror
         </div>
+        <div class="form-group">
+            <label class="form-label">Guru Pengajar</label>
+            <input type="text" name="guru" class="form-control"
+                value="{{ old('guru') }}" placeholder="contoh: Budi Santoso">
+            @error('guru')<small style="color:red">{{ $message }}</small>@enderror
+        </div>
         <button type="submit" class="btn btn-primary">Simpan</button>
     </form>
 </div>

@@ -62,4 +62,17 @@ class AbsensiController extends Controller
         return redirect()->route('admin.absensi.index')
                          ->with('success', 'Data absensi berhasil dihapus.');
     }
+    
+    public function bulkDestroy(Request $request)
+{
+    $ids = $request->input('ids', []);
+
+    if (empty($ids)) {
+        return back()->with('error', 'Tidak ada data yang dipilih.');
+    }
+
+    Absensi::whereIn('id', $ids)->delete();
+
+    return back()->with('success', count($ids) . ' data absensi berhasil dihapus.');
+}
 }
