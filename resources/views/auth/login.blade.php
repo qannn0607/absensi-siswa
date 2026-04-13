@@ -24,6 +24,7 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: fadeSlideUp 0.6s ease forwards;
         }
 
         /* Sisi Kiri */
@@ -71,7 +72,14 @@
             margin-top: 15px;
             font-size: 13px;
             color: #cbd5e1;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s ease forwards;
         }
+
+        .login-left .info-item:nth-child(1) { animation-delay: 0.3s; }
+        .login-left .info-item:nth-child(2) { animation-delay: 0.5s; }
+        .login-left .info-item:nth-child(3) { animation-delay: 0.7s; }
 
         /* Sisi Kanan */
         .login-right {
@@ -128,7 +136,7 @@
             border-radius: 8px;
             font-size: 14px;
             color: #374151;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             background: #f8fafc;
         }
 
@@ -169,12 +177,28 @@
             cursor: pointer;
             transition: all 0.2s;
             letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-login:hover {
-            background: linear-gradient(135deg, #2d5086, #1e3a5f);
             transform: translateY(-1px);
             box-shadow: 0 5px 15px rgba(30,58,95,0.3);
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 100%;
+            top: 0;
+            left: 0;
+            background: rgba(255,255,255,0.1);
+            transition: width 0.3s ease;
+        }
+
+        .btn-login:hover::after {
+            width: 100%;
         }
 
         .alert-danger {
@@ -193,62 +217,15 @@
             font-size: 12px;
             color: #94a3b8;
         }
-        /* Transition */
-.login-wrapper {
-    animation: fadeSlideUp 0.6s ease forwards;
-}
 
-@keyframes fadeSlideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
 
-.btn-login {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-login::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background: rgba(255,255,255,0.1);
-    transition: width 0.3s ease;
-}
-
-.btn-login:hover::after {
-    width: 100%;
-}
-
-.form-control {
-    transition: all 0.3s ease;
-}
-
-.login-left .info-item {
-    opacity: 0;
-    transform: translateX(-20px);
-    animation: slideIn 0.5s ease forwards;
-}
-
-.login-left .info-item:nth-child(1) { animation-delay: 0.3s; }
-.login-left .info-item:nth-child(2) { animation-delay: 0.5s; }
-.login-left .info-item:nth-child(3) { animation-delay: 0.7s; }
-
-@keyframes slideIn {
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
+        @keyframes slideIn {
+            to { opacity: 1; transform: translateX(0); }
+        }
     </style>
 </head>
 <body>
@@ -261,9 +238,11 @@
         <div class="divider"></div>
         <p>Platform manajemen kehadiran siswa yang mudah, cepat, dan akurat.</p>
 
-        <div class="info-item">✅ Rekap absensi otomatis</div>
-        <div class="info-item">📊 Laporan lengkap per kelas</div>
-        <div class="info-item">👤 Multi role pengguna</div>
+        <div class="info-items-container">
+            <div class="info-item">✅ Rekap absensi otomatis</div>
+            <div class="info-item">📊 Laporan lengkap per kelas</div>
+            <div class="info-item">👤 Multi role pengguna</div>
+        </div>
     </div>
 
     {{-- Kanan --}}
@@ -282,12 +261,13 @@
             @csrf
 
             <div class="form-group">
-                <label class="form-label">Email</label>
+                <label class="form-label">Username atau NIS</label>
                 <div class="input-wrapper">
-                    <span class="input-icon">✉️</span>
-                    <input type="text" name="email" class="form-control"
-                        value="{{ old('email') }}"
-                        placeholder="NIS atau Email" required autofocus>
+                    <span class="input-icon">👤</span>
+                    {{-- Diubah dari name="email" menjadi name="username" --}}
+                    <input type="text" name="username" class="form-control"
+                        value="{{ old('username') }}"
+                        placeholder="Masukkan NIS atau Username" required autofocus>
                 </div>
             </div>
 
@@ -309,7 +289,7 @@
         </form>
 
         <div class="footer-text">
-            &copy; {{ date('Y') }} Sistem Absensi Siswa. All rights reserved.
+            &copy; {{ date('Y') }} SMK N 5 TELKOM. All rights reserved.
         </div>
     </div>
 </div>

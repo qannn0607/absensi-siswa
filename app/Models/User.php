@@ -30,7 +30,7 @@ class User extends Authenticatable
         ];
     }
 
-    protected $fillable = ['name', 'email', 'password', 'role'];
+    protected $fillable = ['name', 'username', 'password', 'role'];
 
     public function siswa()
     {
