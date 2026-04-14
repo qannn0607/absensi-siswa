@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
+            $table->string('username')->unique(); // Pakai username sebagai identitas unik
             $table->string('name');
             $table->string('password');
             $table->enum('role', ['admin', 'siswa'])->default('admin');
@@ -21,8 +21,9 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        // Tabel ini biasanya pakai email, kita ganti ke username biar konsisten
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('username')->primary(); 
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
