@@ -43,7 +43,7 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>No.</th>
                         <th>NIS</th>
                         <th>Nama Siswa</th>
                         <th>Status</th>
