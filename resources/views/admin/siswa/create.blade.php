@@ -25,30 +25,10 @@
         </div>
         <div class="form-row">
             <div class="form-group">
-                <label class="form-label">Email <small style="color:#94a3b8">(opsional)</small></label>
-                <input type="email" name="email" class="form-control"
-                    value="{{ old('email') }}" placeholder="opsional">
-                @error('email')<small style="color:red">{{ $message }}</small>@enderror
-            </div>
-            <div class="form-group">
                 <label class="form-label">Password</label>
                 <input type="password" name="password" class="form-control"
                        placeholder="Minimal 6 karakter">
                 @error('password')<small style="color:red">{{ $message }}</small>@enderror
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="form-group">
-                <label class="form-label">Kelas</label>
-                <select name="kelas_id" class="form-control">
-                    <option value="">-- Pilih Kelas --</option>
-                    @foreach($kelas as $k)
-                        <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
-                            {{ $k->nama_kelas }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('kelas_id')<small style="color:red">{{ $message }}</small>@enderror
             </div>
             <div class="form-group">
                 <label class="form-label">Jenis Kelamin</label>
@@ -59,6 +39,18 @@
                 </select>
                 @error('jenis_kelamin')<small style="color:red">{{ $message }}</small>@enderror
             </div>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Kelas</label>
+            <select name="kelas_id" class="form-control">
+                <option value="">-- Pilih Kelas --</option>
+                @foreach($kelas as $k)
+                    <option value="{{ $k->id }}" {{ old('kelas_id') == $k->id ? 'selected' : '' }}>
+                        {{ $k->nama_kelas }}
+                    </option>
+                @endforeach
+            </select>
+            @error('kelas_id')<small style="color:red">{{ $message }}</small>@enderror
         </div>
         <div class="form-group">
             <label class="form-label">Foto (opsional)</label>

@@ -57,7 +57,6 @@
                     <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Nama</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Kelas</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">L/P</th>
-                    <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Email</th>
                     <th class="px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">Aksi</th>
                 </tr>
             </thead>
@@ -103,9 +102,6 @@
                             <span class="px-2 py-1 bg-pink-50 text-pink-600 text-xs font-medium rounded-full">Perempuan</span>
                         @endif
                     </td>
-
-                    {{-- Email --}}
-                    <td class="px-4 py-3 text-gray-500">{{ $item->user->email }}</td>
 
                     {{-- Aksi --}}
                     <td class="px-4 py-3">

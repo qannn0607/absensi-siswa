@@ -6,14 +6,11 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique(); // Pakai username sebagai identitas unik
+            $table->string('username')->unique();
             $table->string('name');
             $table->string('password');
             $table->enum('role', ['admin', 'siswa'])->default('admin');
@@ -21,9 +18,8 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Tabel ini biasanya pakai email, kita ganti ke username biar konsisten
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('username')->primary(); 
+            $table->string('username')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
@@ -38,9 +34,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');

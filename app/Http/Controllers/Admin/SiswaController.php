@@ -14,9 +14,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SiswaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $siswa = Siswa::with(['user', 'kelas'])->paginate(10);
@@ -33,7 +30,6 @@ class SiswaController extends Controller
     {
         $request->validate([
             'name'          => 'required|string|max:100',
-            'email'         => 'required|email|unique:users,email',
             'password'      => 'required|min:6',
             'nis'           => 'required|unique:siswa,nis',
             'kelas_id'      => 'required|exists:kelas,id',
@@ -41,21 +37,19 @@ class SiswaController extends Controller
             'foto'          => 'nullable|image|max:2048',
         ]);
 
-        // Buat user dulu
+        // username siswa = NIS
         $user = User::create([
             'name'     => $request->name,
-            'email'    => $request->email ?? null,
+            'username' => $request->nis,
             'password' => Hash::make($request->password),
             'role'     => 'siswa',
         ]);
 
-        // Upload foto jika ada
         $fotoPath = null;
         if ($request->hasFile('foto')) {
             $fotoPath = $request->file('foto')->store('foto-siswa', 'public');
         }
 
-        // Buat data siswa
         Siswa::create([
             'user_id'       => $user->id,
             'kelas_id'      => $request->kelas_id,
@@ -78,7 +72,6 @@ class SiswaController extends Controller
     {
         $request->validate([
             'name'          => 'required|string|max:100',
-            'email'         => 'nullable|email|unique:users,email',
             'nis'           => 'required|unique:siswa,nis,' . $siswa->id,
             'kelas_id'      => 'required|exists:kelas,id',
             'jenis_kelamin' => 'required|in:L,P',
@@ -87,8 +80,8 @@ class SiswaController extends Controller
 
         // Update user
         $siswa->user->update([
-            'name'  => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'username' => $request->nis, // username ikut NIS
         ]);
 
         if ($request->password) {
@@ -97,7 +90,6 @@ class SiswaController extends Controller
             ]);
         }
 
-        // Upload foto baru jika ada
         if ($request->hasFile('foto')) {
             if ($siswa->foto) {
                 Storage::disk('public')->delete($siswa->foto);
@@ -122,51 +114,51 @@ class SiswaController extends Controller
         if ($siswa->foto) {
             Storage::disk('public')->delete($siswa->foto);
         }
-        $siswa->user->delete(); // cascade delete siswa juga
+        $siswa->user->delete();
         return redirect()->route('admin.siswa.index')
                          ->with('success', 'Siswa berhasil dihapus.');
     }
+
     public function importForm()
-{
-    return view('admin.siswa.import');
-}
-
-public function import(Request $request)
-{
-    $request->validate([
-        'file' => 'required|mimes:xlsx,xls,csv|max:2048',
-    ]);
-
-    try {
-        Excel::import(new SiswaImport, $request->file('file'));
-        return redirect()->route('admin.siswa.index')
-                         ->with('success', 'Data siswa berhasil diimport.');
-    } catch (\Exception $e) {
-        return redirect()->back()
-                         ->with('error', 'Gagal import: ' . $e->getMessage());
-    }
-}
-
-public function bulkDestroy(Request $request)
-{
-    $ids = $request->input('ids', []);
-
-    if (empty($ids)) {
-        return back()->with('error', 'Tidak ada siswa yang dipilih.');
+    {
+        return view('admin.siswa.import');
     }
 
-    // Hapus foto & user terkait
-    $siswas = Siswa::whereIn('id', $ids)->get();
-    foreach ($siswas as $siswa) {
-        if ($siswa->foto) {
-            Storage::delete($siswa->foto);
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls,csv|max:2048',
+        ]);
+
+        try {
+            Excel::import(new SiswaImport, $request->file('file'));
+            return redirect()->route('admin.siswa.index')
+                             ->with('success', 'Data siswa berhasil diimport.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                             ->with('error', 'Gagal import: ' . $e->getMessage());
         }
-        if ($siswa->user) {
-            $siswa->user->delete();
-        }
-        $siswa->delete();
     }
 
-    return back()->with('success', count($ids) . ' siswa berhasil dihapus.');
-}
+    public function bulkDestroy(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return back()->with('error', 'Tidak ada siswa yang dipilih.');
+        }
+
+        $siswas = Siswa::whereIn('id', $ids)->get();
+        foreach ($siswas as $siswa) {
+            if ($siswa->foto) {
+                Storage::disk('public')->delete($siswa->foto);
+            }
+            if ($siswa->user) {
+                $siswa->user->delete();
+            }
+            $siswa->delete();
+        }
+
+        return back()->with('success', count($ids) . ' siswa berhasil dihapus.');
+    }
 }
