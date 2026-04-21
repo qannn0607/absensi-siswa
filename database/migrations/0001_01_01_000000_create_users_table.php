@@ -13,18 +13,17 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->string('username')->unique(); // Pakai username sebagai identitas unik
             $table->string('name');
-            $table->string('email')->nullable()->change();
-            $table->dropUnique('users_email_unique');
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->enum('role', ['admin', 'siswa'])->default('admin');
             $table->rememberToken();
             $table->timestamps();
         });
 
+        // Tabel ini biasanya pakai email, kita ganti ke username biar konsisten
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->string('username')->primary(); 
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });
@@ -47,8 +46,5 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-        Schema::table('users', function (Blueprint $table) {
-        $table->string('email')->nullable(false)->change();
-    });
     }
 };

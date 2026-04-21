@@ -26,53 +26,49 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        // Cek apakah input adalah NIS (angka) atau email
-        $loginField = is_numeric($request->email) ? 'nis' : 'email';
+{
+    // Kita cek apakah inputnya angka (NIS) atau teks (Username)
+    // Ingat: ganti $request->email jadi $request->username sesuai input di form nanti
+    $loginValue = $request->username ?? $request->email; 
+    $loginField = is_numeric($loginValue) ? 'nis' : 'username';
 
-        if ($loginField === 'nis') {
-            // Cari siswa berdasarkan NIS
-            $siswa = Siswa::where('nis', $request->email)->first();
+    if ($loginField === 'nis') {
+        // Logika untuk Siswa via NIS
+        $siswa = Siswa::where('nis', $loginValue)->first();
 
-            // Cek apakah siswa ditemukan
-            if (!$siswa) {
-                throw ValidationException::withMessages([
-                    'email' => 'NIS tidak ditemukan.',
-                ]);
-            }
-
-            // Cek apakah siswa punya akun user
-            if (!$siswa->user) {
-                throw ValidationException::withMessages([
-                    'email' => 'Akun untuk siswa ini tidak ditemukan.',
-                ]);
-            }
-
-            // Cek password
-            if (!Hash::check($request->password, $siswa->user->password)) {
-                throw ValidationException::withMessages([
-                    'email' => 'NIS atau password salah.',
-                ]);
-            }
-
-            // Login user
-            Auth::login($siswa->user, $request->boolean('remember'));
-
-        } else {
-            // Login pakai email biasa
-            $request->authenticate();
+        if (!$siswa || !$siswa->user) {
+            throw ValidationException::withMessages([
+                'username' => 'NIS atau akun tidak ditemukan.',
+            ]);
         }
 
-        // Regenerate session
-        $request->session()->regenerate();
-
-        // Redirect berdasarkan role
-        if (Auth::user()->role === 'admin') {
-            return redirect()->route('admin.dashboard');
+        if (!Hash::check($request->password, $siswa->user->password)) {
+            throw ValidationException::withMessages([
+                'username' => 'Password salah.',
+            ]);
         }
 
-        return redirect()->route('siswa.dashboard');
+        Auth::login($siswa->user, $request->boolean('remember'));
+
+    } else {
+        // Logika untuk Admin via Username
+        // Kita gunakan attempt agar lebih aman
+        if (!Auth::attempt(['username' => $loginValue, 'password' => $request->password], $request->boolean('remember'))) {
+            throw ValidationException::withMessages([
+                'username' => __('auth.failed'),
+            ]);
+        }
     }
+
+    $request->session()->regenerate();
+
+    // Redirect berdasarkan role
+    if (Auth::user()->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('siswa.dashboard');
+}
 
     /**
      * Destroy an authenticated session.
